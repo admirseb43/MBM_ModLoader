@@ -1,0 +1,51 @@
+{
+  "app": {
+    "title": "MBM Mod Loader"
+  },
+  "top_bar": {
+    "profile_label": "Profil",
+    "path_warning": "⚠  Le dossier du jeu doit être défini",
+    "menu": "Menu"
+  },
+  "menu": {
+    "set_game_folder": "Définir le dossier du jeu",
+    "force_refresh": "Forcer le rechargement"
+  },
+  "profile_dropdown": {
+    "new": "+  nouveau"
+  },
+  "new_profile_dialog": {
+    "title": "Nouveau profil",
+    "name_label": "Nom du profil",
+    "hint": "Le nouveau profil commence avec le contenu par défaut."
+  },
+  "folder_picker": {
+    "title": "Sélectionner le dossier du jeu"
+  },
+  "buttons": {
+    "ok": "OK",
+    "cancel": "Annuler",
+    "create": "Créer",
+    "apply": "Appliquer et mettre à jour",
+    "waiting": "Chargement",
+    "no_changes": "Aucune modification et tout est à jour",
+    "no_mods": "Aucun mod sélectionné"
+  },
+  "mod_list": {
+    "col_name": "Nom",
+    "col_author": "Auteur",
+    "col_newest": "Dernière version",
+    "col_local": "Version locale"
+  },
+  "apply_dialog": {
+    "title": "Application des modifications",
+    "config_updated": "Le fichier de configuration a été mis à jour"
+  },
+  "errors": {
+    "invalid_folder_title": "Dossier de jeu invalide",
+    "invalid_folder_message": "Le dossier sélectionné ne contient pas\n'MonsterBlackMarket.exe'.\n\nVeuillez sélectionner le bon dossier du jeu.",
+    "profile_name_empty": "Le nom du profil ne peut pas être vide",
+    "profile_name_invalid_chars": "Le nom du profil contient des caractères invalides",
+    "profile_already_exists": "Un profil nommé '{name}' existe déjà"
+  }
+}

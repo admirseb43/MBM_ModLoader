@@ -1,0 +1,51 @@
+{
+  "app": {
+    "title": "MBM 模组加载器"
+  },
+  "top_bar": {
+    "profile_label": "配置",
+    "path_warning": "⚠  必须设置游戏文件夹路径",
+    "menu": "菜单"
+  },
+  "menu": {
+    "set_game_folder": "设置游戏文件夹",
+    "force_refresh": "强制刷新"
+  },
+  "profile_dropdown": {
+    "new": "+  新建"
+  },
+  "new_profile_dialog": {
+    "title": "新建配置",
+    "name_label": "配置名称",
+    "hint": "新配置将从默认内容开始。"
+  },
+  "folder_picker": {
+    "title": "选择游戏文件夹"
+  },
+  "buttons": {
+    "ok": "确定",
+    "cancel": "取消",
+    "create": "创建",
+    "apply": "应用并更新",
+    "waiting": "加载中",
+    "no_changes": "没有变更，一切均为最新版本",
+    "no_mods": "未选择模组"
+  },
+  "mod_list": {
+    "col_name": "名称",
+    "col_author": "作者",
+    "col_newest": "最新版本",
+    "col_local": "本地版本"
+  },
+  "apply_dialog": {
+    "title": "正在应用更改",
+    "config_updated": "配置文件已更新"
+  },
+  "errors": {
+    "invalid_folder_title": "无效的游戏文件夹",
+    "invalid_folder_message": "所选文件夹不包含\n'MonsterBlackMarket.exe'。\n\n请选择正确的游戏文件夹。",
+    "profile_name_empty": "配置名称不能为空",
+    "profile_name_invalid_chars": "配置名称包含无效字符",
+    "profile_already_exists": "名为 '{name}' 的配置已存在"
+  }
+}

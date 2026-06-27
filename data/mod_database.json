@@ -1,0 +1,14 @@
+{
+    "version": "1.0.0",
+    "last_edited": "",
+    "mods": [
+        {
+            "name": "PracticalFunction",
+            "theme": "Utilities",
+            "url_repo": "https://github.com/LanVVVVV/PracticalFunction",
+            "short_description": "Add some Practical Function and allowing customizing some game settings",
+            "author": "LanVVVVV",
+            "file_name": "PracticalFunction.dll"
+        }
+    ]
+}

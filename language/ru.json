@@ -1,0 +1,51 @@
+{
+  "app": {
+    "title": "MBM Загрузчик модов"
+  },
+  "top_bar": {
+    "profile_label": "Профиль",
+    "path_warning": "⚠  Необходимо указать папку с игрой",
+    "menu": "Меню"
+  },
+  "menu": {
+    "set_game_folder": "Выбрать папку с игрой",
+    "force_refresh": "Принудительное обновление"
+  },
+  "profile_dropdown": {
+    "new": "+  создать"
+  },
+  "new_profile_dialog": {
+    "title": "Новый профиль",
+    "name_label": "Имя профиля",
+    "hint": "Новый профиль создаётся с содержимым по умолчанию."
+  },
+  "folder_picker": {
+    "title": "Выберите папку с игрой"
+  },
+  "buttons": {
+    "ok": "ОК",
+    "cancel": "Отмена",
+    "create": "Создать",
+    "apply": "Применить и обновить",
+    "waiting": "Загрузка",
+    "no_changes": "Изменений нет, всё актуально",
+    "no_mods": "Нет выбранных модов"
+  },
+  "mod_list": {
+    "col_name": "Название",
+    "col_author": "Автор",
+    "col_newest": "Последняя версия",
+    "col_local": "Локальная версия"
+  },
+  "apply_dialog": {
+    "title": "Применение изменений",
+    "config_updated": "Файл конфигурации обновлён"
+  },
+  "errors": {
+    "invalid_folder_title": "Неверная папка игры",
+    "invalid_folder_message": "В выбранной папке не найден\n'MonsterBlackMarket.exe'.\n\nПожалуйста, выберите правильную папку с игрой.",
+    "profile_name_empty": "Имя профиля не может быть пустым",
+    "profile_name_invalid_chars": "Имя профиля содержит недопустимые символы",
+    "profile_already_exists": "Профиль с именем '{name}' уже существует"
+  }
+}

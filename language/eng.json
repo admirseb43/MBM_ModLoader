@@ -1,0 +1,51 @@
+{
+  "app": {
+    "title": "MBM Mod Loader"
+  },
+  "top_bar": {
+    "profile_label": "Profile",
+    "path_warning": "⚠  Game folder path must be set",
+    "menu": "Menu"
+  },
+  "menu": {
+    "set_game_folder": "Set game folder",
+    "force_refresh": "Force refresh"
+  },
+  "profile_dropdown": {
+    "new": "+  new"
+  },
+  "new_profile_dialog": {
+    "title": "New profile",
+    "name_label": "Profile name",
+    "hint": "The new profile starts from the default content."
+  },
+  "folder_picker": {
+    "title": "Select game folder"
+  },
+  "buttons": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "create": "Create",
+    "apply": "Apply and update",
+    "waiting": "Waiting",
+    "no_changes": "There are no changes and everything is up to date",
+    "no_mods": "No mod selected"
+  },
+  "mod_list": {
+    "col_name": "Name",
+    "col_author": "Author",
+    "col_newest": "Newest version",
+    "col_local": "Local version"
+  },
+  "apply_dialog": {
+    "title": "Applying changes",
+    "config_updated": "Configuration file has been updated"
+  },
+  "errors": {
+    "invalid_folder_title": "Invalid game folder",
+    "invalid_folder_message": "The selected folder does not contain\n'MonsterBlackMarket.exe'.\n\nPlease select the correct game folder.",
+    "profile_name_empty": "Profile name cannot be empty",
+    "profile_name_invalid_chars": "Profile name contains invalid characters",
+    "profile_already_exists": "A profile named '{name}' already exists"
+  }
+}
