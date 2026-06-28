@@ -39,9 +39,19 @@
   },
   "apply_dialog": {
     "title": "正在应用更改",
-    "config_updated": "配置文件已更新"
+    "config_updated": "配置文件已更新",
+    "downloading": "正在下载 {name}…",
+    "installing": "正在安装 {name}…"
+  },
+  "themes": {
+    "gameplay": "游戏玩法",
+    "quality_of_life": "生活质量",
+    "utilities": "实用工具",
+    "visual": "视觉"
   },
   "errors": {
+    "rate_limit_title": "请求次数过多",
+    "rate_limit_message": "模组加载器向 GitHub 发送了过多请求。\n为避免被封禁，后续请求已被屏蔽\n约 {minutes} 分钟。\n\n请稍后再试。",
     "invalid_folder_title": "无效的游戏文件夹",
     "invalid_folder_message": "所选文件夹不包含\n'MonsterBlackMarket.exe'。\n\n请选择正确的游戏文件夹。",
     "profile_name_empty": "配置名称不能为空",

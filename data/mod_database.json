@@ -4,11 +4,83 @@
     "mods": [
         {
             "name": "PracticalFunction",
-            "theme": "Utilities",
+            "theme": "quality_of_life",
             "url_repo": "https://github.com/LanVVVVV/PracticalFunction",
-            "short_description": "Add some Practical Function and allowing customizing some game settings",
+            "short_description": "Adding some Practical Function and allowing customizing some game settings.",
             "author": "LanVVVVV",
             "file_name": "PracticalFunction.dll"
+        },        
+        {
+            "name": "SystemExtensionLib​",
+            "theme": "utilities",
+            "url_repo": "https://github.com/LanVVVVV/SystemExtensionLib",
+            "short_description": "Designed to provide system APIs and shared utilities for other mods.",
+            "author": "LanVVVVV",
+            "file_name": "SystemExtensionLib.dll"
+        },
+        {
+            "name": "DragDuringPause​",
+            "theme": "quality_of_life",
+            "url_repo": "https://github.com/LanVVVVV/DragDuringPause",
+            "short_description": "Allowing dragging characters during pause. This mod’s features are also included in PracticalFunction.",
+            "author": "LanVVVVV",
+            "file_name": "DragDuringPause.dll"
+        },
+        {
+            "name": "FetusCountVisualPatch",
+            "theme": "visual",
+            "url_repo": "https://github.com/LanVVVVV/FetusCountVisualPatch",
+            "short_description": "Adding status icons for pregnancy counts 4 and 5, and allows setting the upper limit on the Max Concurrent Fetuses.",
+            "author": "LanVVVVV",
+            "file_name": "FetusCountVisualPatch.dll"
+        },
+        {
+            "name": "MilkingRoomVisualPerformancePatch",
+            "theme": "visual",
+            "url_repo": "https://github.com/LanVVVVV/MilkingRoomVisualPerformancePatch",
+            "short_description": "Improving the performance of the Milkingroom animation by using shaders instead of masks.",
+            "author": "LanVVVVV",
+            "file_name": "MilkingRoomVisualPerformancePatch.dll"
+        },
+        {
+            "name": "MoreGraphicAttachments",
+            "theme": "visual",
+            "url_repo": "https://github.com/LanVVVVV/MoreGraphicAttachments",
+            "short_description": "Adding additional Spine Attachments graphics for game character units. It is now possible to customize clothing colors.",
+            "author": "LanVVVVV",
+            "file_name": "MoreGraphicAttachments.dll"
+        },
+        {
+            "name": "TYPEtoNumberID",
+            "theme": "utilities",
+            "url_repo": "https://github.com/LanVVVVV/TYPEtoNumberID",
+            "short_description": "Aimed at expanding the supported number of Spine attachment types for the information panel.",
+            "author": "LanVVVVV",
+            "file_name": "TYPEtoNumberID.dll"
+        },
+        {
+            "name": "InheritanceChallenge",
+            "theme": "gameplay",
+            "url_repo": "https://github.com/LanVVVVV/InheritanceChallenge",
+            "short_description": "Modifies the Trait inheritance system of Breeding.",
+            "author": "LanVVVVV",
+            "file_name": "InheritanceChallenge.dll"
+        },
+        {
+            "name": "CustomAssetTextResource",
+            "theme": "visual",
+            "url_repo": "https://github.com/LanVVVVV/CustomAssetTextResource",
+            "short_description": "Loading modified TextAssets without unpacking resources.assets.",
+            "author": "LanVVVVV",
+            "file_name": "CustomAssetTestResource.dll"
+        },
+        {
+            "name": "NoTitsLimit",
+            "theme": "gameplay",
+            "url_repo": "https://github.com/LanVVVVV/NoTitsLimit",
+            "short_description": "Removes age tits limit.",
+            "author": "LanVVVVV",
+            "file_name": "NoTitsLimit.dll"
         }
     ]
 }

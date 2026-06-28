@@ -39,9 +39,19 @@
   },
   "apply_dialog": {
     "title": "Применение изменений",
-    "config_updated": "Файл конфигурации обновлён"
+    "config_updated": "Файл конфигурации обновлён",
+    "downloading": "Загрузка {name}…",
+    "installing": "Установка {name}…"
+  },
+  "themes": {
+    "gameplay": "Геймплей",
+    "quality_of_life": "Качество жизни",
+    "utilities": "Утилиты",
+    "visual": "Визуальное"
   },
   "errors": {
+    "rate_limit_title": "Слишком много запросов",
+    "rate_limit_message": "Загрузчик модов отправил слишком много запросов к GitHub.\nЧтобы избежать блокировки, дальнейшие запросы заблокированы\nпримерно на {minutes} минут(у).\n\nПожалуйста, повторите попытку позже.",
     "invalid_folder_title": "Неверная папка игры",
     "invalid_folder_message": "В выбранной папке не найден\n'MonsterBlackMarket.exe'.\n\nПожалуйста, выберите правильную папку с игрой.",
     "profile_name_empty": "Имя профиля не может быть пустым",

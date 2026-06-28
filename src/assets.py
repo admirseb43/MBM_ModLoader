@@ -6,7 +6,9 @@ from PIL import Image, ImageTk
 from reportlab.graphics import renderPM
 from svglib.svglib import svg2rlg
 
-ASSETS_DIR = Path(__file__).resolve().parent.parent / "assets"
+from config import _bundle_dir
+
+ASSETS_DIR = _bundle_dir() / "assets"
 
 
 def load_svg_as_photo(name: str, height: int) -> ImageTk.PhotoImage:

@@ -3,9 +3,10 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 
+from config import _bundle_dir
 from mod_descriptor import ModDescriptor
 
-DB_PATH = Path(__file__).resolve().parent.parent / "data" / "mod_database.json"
+DB_PATH = _bundle_dir() / "data" / "mod_database.json"
 
 
 @dataclass

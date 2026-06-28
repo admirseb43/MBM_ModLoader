@@ -9,6 +9,7 @@ import webbrowser
 from tkinter import filedialog, font as tkfont, ttk
 
 from assets import load_svg_as_photo
+from config import _app_dir
 import lang
 from installed_mod import InstalledMod
 from mod_database import ModDatabase
@@ -41,7 +42,7 @@ STAR_FILLED = "★"        # ★
 STAR_EMPTY = "☆"         # ☆
 
 # Maps language key → flag SVG filename (lipis/flag-icons, 4x3 folder).
-_LANG_FLAGS = {"eng": "gb.svg", "fr": "fr.svg", "ch": "cn.svg", "ru": "ru.svg"}
+_LANG_FLAGS = {"en": "gb.svg", "fr": "fr.svg", "ch": "cn.svg", "ru": "ru.svg"}
 
 
 def _color_gradient(start_hex: str, end_hex: str, steps: int) -> list:
@@ -64,7 +65,7 @@ class ModLoaderApp(tk.Tk):
 
         self.log = setup_logger()
         self.log.info("Application started")
-        self._current_lang = "eng"
+        self._current_lang = "en"
         lang.load(self._current_lang)
         self.profile = load_profile(self.log)
 
@@ -80,7 +81,8 @@ class ModLoaderApp(tk.Tk):
         self._build_bottom_bar()
 
         self.protocol("WM_DELETE_WINDOW", self._on_close)
-        self.after(50, self._open_repo_check)
+        if (self.profile.game_folder_path or "").strip():
+            self.after(50, self._open_repo_check)
 
     def _on_close(self) -> None:
         """Log shutdown then close the window."""
@@ -231,6 +233,7 @@ class ModLoaderApp(tk.Tk):
         self.profile.save()
         self.log.info(f"Game folder set: {path}")
         self._update_path_warning()
+        self._open_repo_check()
 
     def _show_error_dialog(self, title: str, message: str) -> None:
         """Generic themed error dialog with an OK button."""
@@ -478,10 +481,38 @@ class ModLoaderApp(tk.Tk):
         y = self.winfo_rooty() + (self.winfo_height() - h) // 3
         dialog.geometry(f"+{x}+{y}")
 
+    def _show_rate_limit_dialog(self, reset_at: float) -> None:
+        """Show a modal warning that GitHub rate limit was hit and requests are blocked."""
+        import time as _time
+        dialog = tk.Toplevel(self)
+        dialog.title(lang.t("errors.rate_limit_title"))
+        dialog.configure(bg=COLOR_BG)
+        dialog.resizable(False, False)
+        dialog.transient(self)
+        dialog.grab_set()
+
+        body = tk.Frame(dialog, bg=COLOR_BG, padx=40, pady=28)
+        body.pack(fill="both", expand=True)
+
+        tk.Label(body, text=lang.t("errors.rate_limit_title"),
+                 bg=COLOR_BG, fg=COLOR_WARN, font=("Segoe UI", 11, "bold")).pack(pady=(0, 12))
+
+        remaining = max(0, int(reset_at - _time.time()))
+        minutes = max(1, remaining // 60)
+        msg = lang.t("errors.rate_limit_message").format(minutes=minutes)
+        tk.Label(body, text=msg, bg=COLOR_BG, fg=COLOR_TEXT,
+                 font=("Segoe UI", 9), justify="center").pack(pady=(0, 20))
+
+        tk.Button(body, text=lang.t("buttons.ok"), bg=COLOR_WIDGET, fg=COLOR_TEXT,
+                  relief="flat", padx=20, pady=4,
+                  command=dialog.destroy).pack()
+
+        self._center_dialog(dialog)
+
     def _open_repo_check(self) -> None:
         """Open a blocking loading window then check every mod repo in a background thread."""
         import threading
-        from repo_checker import get_releases
+        from repo_checker import get_releases, RateLimitError
         from file_checker import get_file_version
 
         self._mod_statuses = {}
@@ -511,6 +542,7 @@ class ModLoaderApp(tk.Tk):
         self.log.info("Repos are loading")
 
         done = [0]
+        rate_limit_reset = [0.0]
 
         def worker():
             for mod in mods:
@@ -528,7 +560,11 @@ class ModLoaderApp(tk.Tk):
                                 self.log.info(f"[{mod.name}] Local file version: {fv}")
                             else:
                                 self.log.warning(f"[{mod.name}] Local file found but version unreadable")
-                    self.after(0, lambda name=mod.name, v=versions, fv=file_version: self._set_mod_releases(name, v, fv))
+                    self.after(0, lambda name=mod.name, v=versions, fv=file_version, url=mod.url_repo: self._set_mod_releases(name, v, fv, url))
+                except RateLimitError as exc:
+                    self.log.warning(f"GitHub rate limit exceeded — blocking further requests until reset")
+                    rate_limit_reset[0] = exc.reset_at
+                    self.after(0, lambda name=mod.name: self._mark_mod_unavailable(name))
                 except Exception as exc:
                     self.log.error(f"[{mod.name}] Failed to reach '{mod.url_repo}': {exc}")
                     self.after(0, lambda name=mod.name: self._mark_mod_unavailable(name))
@@ -541,7 +577,10 @@ class ModLoaderApp(tk.Tk):
             self.log.info("Mods are loaded")
             self._set_apply_waiting(False)
             self._refresh_apply_state()
-            self.after(1000, popup.destroy)
+            if rate_limit_reset[0]:
+                self.after(1000, lambda: (popup.destroy(), self._show_rate_limit_dialog(rate_limit_reset[0])))
+            else:
+                self.after(1000, popup.destroy)
 
         threading.Thread(target=worker, daemon=True).start()
 
@@ -643,7 +682,12 @@ class ModLoaderApp(tk.Tk):
                              font=("Segoe UI", 8), padx=6, pady=5, cursor="hand2")
         indicator.pack(side="left")
 
-        theme_label = tk.Label(cat_header, text=theme, bg=COLOR_WIDGET, fg=COLOR_TEXT,
+        theme_key = theme.lower().replace(" ", "_")
+        try:
+            theme_display = lang.t(f"themes.{theme_key}")
+        except (KeyError, TypeError):
+            theme_display = theme
+        theme_label = tk.Label(cat_header, text=theme_display, bg=COLOR_WIDGET, fg=COLOR_TEXT,
                                font=("Segoe UI", 9, "bold"), pady=5, cursor="hand2")
         theme_label.pack(side="left")
 
@@ -720,11 +764,19 @@ class ModLoaderApp(tk.Tk):
             "version_btn": version_btn,
             "local_lbl": local_lbl,
             "disabled": disabled,
+            "checked": checked,
+            "on_checkbox": on_checkbox,
         }
 
         tk.Frame(parent, bg=COLOR_BORDER, height=1).pack(fill="x")
 
     def _on_apply(self) -> None:
+        import threading
+        import zipfile as _zipfile
+        from repo_checker import get_release_asset_url
+        from file_checker import compare_versions
+        import urllib.request as _urllib_req
+
         dialog = tk.Toplevel(self)
         dialog.title(lang.t("apply_dialog.title"))
         dialog.configure(bg=COLOR_BG)
@@ -738,13 +790,13 @@ class ModLoaderApp(tk.Tk):
         tk.Label(body, text=lang.t("apply_dialog.title"),
                  bg=COLOR_BG, fg=COLOR_TEXT, font=("Segoe UI", 11, "bold")).pack(pady=(0, 12))
         status_lbl = tk.Label(body, text="", bg=COLOR_BG, fg=COLOR_TEXT_DIM,
-                              font=("Segoe UI", 10))
+                              font=("Segoe UI", 10), wraplength=340)
         status_lbl.pack()
 
         self._center_dialog(dialog)
         dialog.update()
 
-        # --- Work ---
+        # --- Save config ---
         self.log.info(f"Synchronisation started for profile '{self.profile.name}'")
 
         if not self.profile.path.exists():
@@ -762,18 +814,89 @@ class ModLoaderApp(tk.Tk):
 
         self.profile.save()
         self.log.info(f"Config updated: {len(self.profile.mods)} mod(s) active in '{self.profile.name}'")
-
-        status_lbl.configure(text=lang.t("apply_dialog.config_updated"), fg=COLOR_TEXT)
-        dialog.update()
-
         self._initial_mod_names = {m.name for m in self.profile.mods}
-        self.log.info(f"Synchronisation ended for profile '{self.profile.name}'")
 
-        def _finish():
+        self.after(0, lambda: status_lbl.configure(text=lang.t("apply_dialog.config_updated"), fg=COLOR_TEXT))
+
+        # Snapshot what we need for the worker thread (no UI access from thread)
+        mods_to_process = list(self.profile.mods)
+        db_lookup = {m.name: m for m in ModDatabase.load().mods}
+        game_folder = (self.profile.game_folder_path or "").strip()
+        download_dir = _app_dir() / "_mbm_ml_downloads"
+
+        def _set_status(text: str, color: str = COLOR_TEXT_DIM) -> None:
+            self.after(0, lambda t=text, c=color: status_lbl.configure(text=t, fg=c))
+
+        def _worker() -> None:
+            for installed_mod in mods_to_process:
+                db_mod = db_lookup.get(installed_mod.name)
+                if db_mod is None:
+                    continue
+
+                ref = self._mod_row_refs.get(installed_mod.name, {})
+                file_ver: str | None = ref.get("file_version")
+                sel_ref = ref.get("selected_version")
+                sel_ver: str | None = sel_ref[0] if sel_ref else None
+
+                if sel_ver is None:
+                    # No version info fetched (unavailable mod), skip silently
+                    continue
+
+                if file_ver is not None and compare_versions(file_ver, sel_ver) > 0:
+                    # Local is newer than selected (red) — leave it alone
+                    self.log.info(f"[{installed_mod.name}] Local version is more recent than remote, skipping")
+                    continue
+
+                if file_ver is not None and compare_versions(file_ver, sel_ver) == 0:
+                    # Same version (white) — nothing to do
+                    self.log.info(f"[{installed_mod.name}] Already up to date, skipping")
+                    continue
+
+                # Selected version is newer than local (green) — download
+                _set_status(lang.t("apply_dialog.downloading").format(name=installed_mod.name))
+
+                try:
+                    download_dir.mkdir(exist_ok=True)
+                    url, filename = get_release_asset_url(db_mod.url_repo, sel_ver)
+                    asset_path = download_dir / filename
+                    _urllib_req.urlretrieve(url, asset_path)
+                    self.log.info(f"[{installed_mod.name}] Downloaded '{filename}' successfully")
+                except Exception as exc:
+                    self.log.error(f"[{installed_mod.name}] Download failed: {exc}")
+                    continue
+
+                try:
+                    mods_dir = Path(game_folder) / "mods"
+                    mods_dir.mkdir(parents=True, exist_ok=True)
+                    _set_status(lang.t("apply_dialog.installing").format(name=installed_mod.name))
+
+                    if asset_path.suffix.lower() == ".zip":
+                        with _zipfile.ZipFile(asset_path, "r") as zf:
+                            # Find the expected dll inside the zip
+                            matched = next(
+                                (m for m in zf.namelist() if Path(m).name == db_mod.file_name),
+                                None,
+                            )
+                            if matched:
+                                (mods_dir / db_mod.file_name).write_bytes(zf.read(matched))
+                            else:
+                                zf.extractall(mods_dir)
+                    else:
+                        (mods_dir / db_mod.file_name).write_bytes(asset_path.read_bytes())
+
+                    asset_path.unlink()
+                    self.log.info(f"[{installed_mod.name}] Installed successfully")
+                except Exception as exc:
+                    self.log.error(f"[{installed_mod.name}] Installation failed: {exc}")
+
+            self.log.info(f"Synchronisation ended for profile '{self.profile.name}'")
+            self.after(0, _finish)
+
+        def _finish() -> None:
             dialog.destroy()
             self._open_repo_check()
 
-        self.after(1500, _finish)
+        threading.Thread(target=_worker, daemon=True).start()
         self._refresh_apply_state()
 
     def _start_apply_anim(self) -> None:
@@ -883,7 +1006,7 @@ class ModLoaderApp(tk.Tk):
             fg=COLOR_WARN,
         )
 
-    def _set_mod_releases(self, mod_name: str, versions: list[str], file_version: str | None) -> None:
+    def _set_mod_releases(self, mod_name: str, versions: list[str], file_version: str | None, url_repo: str) -> None:
         """Enable the version dropdown button once releases have been fetched.
 
         file_version: None = file absent; "" = present but unreadable; "x.y.z" = known version.
@@ -925,25 +1048,47 @@ class ModLoaderApp(tk.Tk):
             if popup_ref[0] is not None and popup_ref[0].winfo_exists():
                 popup_ref[0].destroy()
                 popup_ref[0] = None
-            else:
-                popup_ref[0] = self._open_version_popup(btn, versions, on_select=on_version_select)
+                return
+            btn.configure(state="disabled")
+
+            def fetch():
+                import threading
+                from repo_checker import get_all_releases
+                try:
+                    all_versions = get_all_releases(url_repo)
+                except Exception:
+                    all_versions = versions  # fallback to cached latest
+                self.after(0, lambda v=all_versions: _show_popup(v))
+
+            def _show_popup(all_versions):
+                btn.configure(state="normal")
+                popup_ref[0] = self._open_version_popup(btn, all_versions, on_select=on_version_select)
+
+            import threading
+            threading.Thread(target=fetch, daemon=True).start()
 
         btn.configure(text=f"{format_version(latest)}  ▾", fg=_ver_fg(latest), state="normal", cursor="hand2", command=toggle)
         self._mod_row_refs[mod_name]["selected_version"] = selected_version
+        self._mod_row_refs[mod_name]["file_version"] = file_version
 
         # Local version: installed file version with status colour
         if file_version is None:
             self._mod_statuses[mod_name] = "latest"
             local_lbl.configure(text="-", fg=COLOR_TEXT_DIM)
-        elif file_version == "":
-            self._mod_statuses[mod_name] = "up_to_date"
-            local_lbl.configure(text="?", fg=COLOR_TEXT_DIM)
-        elif compare_versions(file_version, latest) >= 0:
-            self._mod_statuses[mod_name] = "up_to_date"
-            local_lbl.configure(text=file_version, fg=COLOR_OK)
         else:
-            self._mod_statuses[mod_name] = "to_update"
-            local_lbl.configure(text=file_version, fg=COLOR_UPDATE)
+            # File is present on disk — auto-check the mod if not already in profile
+            checked = ref["checked"]
+            if not checked[0]:
+                ref["on_checkbox"]()
+            if file_version == "":
+                self._mod_statuses[mod_name] = "up_to_date"
+                local_lbl.configure(text="?", fg=COLOR_TEXT_DIM)
+            elif compare_versions(file_version, latest) >= 0:
+                self._mod_statuses[mod_name] = "up_to_date"
+                local_lbl.configure(text=file_version, fg=COLOR_OK)
+            else:
+                self._mod_statuses[mod_name] = "to_update"
+                local_lbl.configure(text=file_version, fg=COLOR_UPDATE)
 
     def _open_version_popup(self, anchor: tk.Widget, versions: list[str], on_select=None) -> tk.Toplevel:
         """Borderless dropdown listing all release versions below the anchor widget."""
@@ -1061,7 +1206,8 @@ class ModLoaderApp(tk.Tk):
         self._build_content()
         self._build_bottom_bar()
         self.protocol("WM_DELETE_WINDOW", self._on_close)
-        self.after(50, self._open_repo_check)
+        if (self.profile.game_folder_path or "").strip():
+            self.after(50, self._open_repo_check)
 
 
 def main() -> None:

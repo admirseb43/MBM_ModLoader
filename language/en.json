@@ -39,9 +39,19 @@
   },
   "apply_dialog": {
     "title": "Applying changes",
-    "config_updated": "Configuration file has been updated"
+    "config_updated": "Configuration file has been updated",
+    "downloading": "Downloading {name}…",
+    "installing": "Installing {name}…"
+  },
+  "themes": {
+    "gameplay": "Gameplay",
+    "quality_of_life": "Quality Of Life",
+    "utilities": "Utilities",
+    "visual": "Visual"
   },
   "errors": {
+    "rate_limit_title": "Too many requests",
+    "rate_limit_message": "The mod loader has made too many requests to GitHub.\nTo avoid getting banned, further requests have been blocked\nfor approximately {minutes} minute(s).\n\nPlease try again later.",
     "invalid_folder_title": "Invalid game folder",
     "invalid_folder_message": "The selected folder does not contain\n'MonsterBlackMarket.exe'.\n\nPlease select the correct game folder.",
     "profile_name_empty": "Profile name cannot be empty",

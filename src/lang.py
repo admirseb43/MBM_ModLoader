@@ -7,12 +7,14 @@ Keys use dot notation matching the JSON structure (e.g. "errors.invalid_folder_t
 import json
 from pathlib import Path
 
-LANG_DIR = Path(__file__).resolve().parent.parent / "language"
+from config import _bundle_dir
+
+LANG_DIR = _bundle_dir() / "language"
 
 _strings: dict = {}
 
 
-def load(lang_name: str = "eng") -> None:
+def load(lang_name: str = "en") -> None:
     """Load the given language file into memory."""
     global _strings
     with open(LANG_DIR / f"{lang_name}.json", encoding="utf-8") as f:

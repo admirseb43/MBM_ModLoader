@@ -10,6 +10,8 @@ import logging
 from datetime import datetime
 from pathlib import Path
 
+from config import _app_dir
+
 LOG_DIR_NAME = "_mbm_ml_logs"
 LOG_FORMAT = "%(asctime)s | %(levelname)s | %(message)s"
 DATE_FORMAT = "%d-%m-%Y %H:%M:%S"   # 24-hour clock
@@ -19,8 +21,8 @@ _LOGGER_NAME = "mbm"
 
 
 def get_log_dir() -> Path:
-    """Return the log directory (next to this script), creating it if missing."""
-    log_dir = Path(__file__).resolve().parent.parent / LOG_DIR_NAME
+    """Return the log directory (next to the exe / project root), creating it if missing."""
+    log_dir = _app_dir() / LOG_DIR_NAME
     log_dir.mkdir(exist_ok=True)
     return log_dir
 
